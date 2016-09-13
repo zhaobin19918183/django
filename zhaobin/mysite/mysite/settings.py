@@ -41,15 +41,12 @@ INSTALLED_APPS = [
     'avatar',
     'django.contrib.admin',
     'django.contrib.auth',
-    'users',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'booklist',
     'filebrowser',
-
 ]
 ######
 
@@ -64,7 +61,7 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         {'app': 'polls', 'label': u'列表'},
-        {'app': 'booklist', 'label': u'汽车'},
+        # {'app': 'photologue', 'label': u'相册'},
     ),
 
 }

@@ -2,14 +2,10 @@
 # -*- coding:gb2312 -*- ＃必须在第一行或者第二行
 # -*- coding:GBK -*- ＃必须在第一行或者第二行
 import sys
-
-from PIL.ImageOps import grayscale
-
 reload(sys)
 sys.setdefaultencoding("utf-8")
-from filebrowser.fields import FileBrowseField
 from django.db import models
-
+from  django.conf  import  settings
 class Item(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField()
@@ -25,17 +21,23 @@ class Item(models.Model):
         return ('item_detail', None, {'object_id': self.id})
 # Create your models here.
 #IOS 上传文件部分
+# Photologue image path relative to media root
+
+
 class ExamInfo(models.Model):
     name = models.CharField(max_length=10,verbose_name="用户名")
-    level = models.ImageField(verbose_name="等级",blank=True,upload_to='./upload')
+    level = models.ImageField(verbose_name="头像",blank=True)
+    #列表显示图片方法
+    def admin_sample(self):
+        return '<img src="/templates/%s" height="50" width="50" />' %(self.level)
+    admin_sample.short_description = 'Sample'
+    admin_sample.allow_tags = True
 
     #改变 form 的名称
     class Meta:
         verbose_name = "IOS"
         verbose_name_plural = "IOS"
     def __str__(self):
-        return self.name
-    def __unicode__(self):
         return self.name
 class addForm(models.Model):
     num = models.CharField(max_length=30, verbose_name="序号")
@@ -54,7 +56,7 @@ class addForm(models.Model):
 
     def __str__(self):
         return self.name
-class  booklist(models.Model):
+class booklist(models.Model):
     name = models.CharField(max_length=20,verbose_name="编号")
     date = models.DateField(verbose_name="出版时间")
     number = models.CharField(max_length=10,verbose_name="书籍名称")
@@ -63,13 +65,6 @@ class  booklist(models.Model):
          verbose_name_plural = "图书列表"
     def __str__(self):
           return self.name
-#photo
-class BlogEntry(models.Model):
-    imageNumber =  models.CharField(max_length=10,verbose_name="编号")
-    image = FileBrowseField("图片名",max_length=500, directory="images/", extensions=[".jpg",".png"], blank=True, null=True)
-    class Meta:
-        verbose_name = "图片上传测试"
-        verbose_name_plural = "图片上传测试"
 class NormalUser(models.Model):
   username = models.CharField(max_length=30)
   headImg = models.FileField(upload_to='./upload')
@@ -79,3 +74,5 @@ class NormalUser(models.Model):
 
   class Meta:
     ordering = ['username']
+
+
