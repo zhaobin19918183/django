@@ -1,7 +1,7 @@
 # -*- coding:UTF-8 -*- ＃必须在第一行或者第二行
 # -*- coding:gb2312 -*- ＃必须在第一行或者第二行
 # -*- coding:GBK -*- ＃必须在第一行或者第二行
-from django.conf.urls import patterns, url, include
+from django.conf.urls import *
 from rest_framework import routers
 from . import views
 from .views import *

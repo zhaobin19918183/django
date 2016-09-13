@@ -5,7 +5,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 from django.db import models
-from  django.conf  import  settings
 class Item(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField()
@@ -22,15 +21,15 @@ class Item(models.Model):
 # Create your models here.
 #IOS 上传文件部分
 # Photologue image path relative to media root
-
-
 class ExamInfo(models.Model):
-    name = models.CharField(max_length=10,verbose_name="用户名")
+    #unique=True　检测是否重复(不允许重复)
+    name = models.CharField(max_length=10,verbose_name="用户名",unique=True)
     level = models.ImageField(verbose_name="头像",blank=True)
     #列表显示图片方法
+
     def admin_sample(self):
         return '<img src="/templates/%s" height="50" width="50" />' %(self.level)
-    admin_sample.short_description = 'Sample'
+    admin_sample.short_description = '缩略图'
     admin_sample.allow_tags = True
 
     #改变 form 的名称

@@ -6,7 +6,7 @@ from .models import addForm,booklist,NormalUser
 from .models import ExamInfo
 
 class ExamInfoAdmin(admin.ModelAdmin):
-     list_display = ['name', 'level','admin_sample']
+     list_display = ['name','admin_sample']
 
 class BookListInfoAdmin(admin.ModelAdmin):
      list_display = ['name','date','number']  #指定要显示的字段

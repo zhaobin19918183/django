@@ -112,4 +112,5 @@ def fileUpload(request):
     filesUpload.level = image
     filesUpload.name  = name
     filesUpload.save()
-    return HttpResponse('Thank you')
+
+    return HttpResponse('success')

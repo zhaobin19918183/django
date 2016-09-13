@@ -150,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-LANGUAGE_CODE = 'zh_hans'
+LANGUAGE_CODE = 'zh-hans'
 FILE_CHARSET = 'utf-8'
 DEFAULT_CHARSET = 'utf-8'
 USE_I18N = True

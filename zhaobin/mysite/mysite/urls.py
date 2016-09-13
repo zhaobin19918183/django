@@ -15,13 +15,9 @@ Including another URLconf
 """
 from django.conf.urls.static import  static
 from django.conf import settings
-from rest_framework import routers
 from filebrowser.sites import site
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth import urls as auth_urls
-
-
 
 urlpatterns = [
     url(r'^avatar/', include('avatar.urls')),
