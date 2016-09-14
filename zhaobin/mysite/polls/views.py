@@ -14,6 +14,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from serializers import UserSerializer,GroupSerializer,booklistSerializer
 from django import forms
+from django.contrib import auth
 
 class JsonTest(simplejson.JSONEncoder ):
     """
@@ -46,7 +47,7 @@ def home(request):
         form = ExamInfoForm()
     return render(request, 'polls/message.html', {'form_info': form})
 def testHtml(request):
-    return  render(request,'polls/text.html')
+   return HttpResponse('success')
 @csrf_exempt
 def book(request):
 
@@ -84,6 +85,7 @@ class NormalUserForm(forms.Form):
   username = forms.CharField()
   headImg  = forms.FileField()
 def registerNormalUser(request):
+
   if request.method == "POST":
     uf = NormalUserForm(request.POST,request.FILES)
     if uf.is_valid():
@@ -105,6 +107,7 @@ def registerNormalUser(request):
 def fileUpload(request):
 
   if request.method   == 'POST':
+
     name              = request.POST.get('name')
     #files 是上传的文件流通过对应的参数名获取
     image             = request.FILES.get('image')
@@ -114,3 +117,29 @@ def fileUpload(request):
     filesUpload.save()
 
     return HttpResponse('success')
+#
+#注册
+class UserForm(forms.Form):
+    username = forms.CharField(label='用户名：',max_length=100)
+    passworld = forms.CharField(label='密码：',max_length=52)
+    email = forms.EmailField(label='电子邮件：')
+
+# Create your views here.
+def register(request):
+    if request.method == "POST":
+        uf = UserForm(request.POST)
+        if uf.is_valid():
+            #获取表单信息
+            username = uf.cleaned_data['username']
+            passworld = uf.cleaned_data['passworld']
+            email = uf.cleaned_data['email']
+            #将表单写入数据库
+            user = User()
+            user.username = username
+            user.set_password(raw_password=passworld)
+            user.email = email
+            user.save()
+            return HttpResponse('success')
+    else:
+        uf = UserForm()
+    return render(request,'polls/register.html',{'uf':uf})

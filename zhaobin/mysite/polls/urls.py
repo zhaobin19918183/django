@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^addForm_json/$',views.addForm_json),
     url(r'^form/$', views.home, name='home'),
     url(r'^home$', views.fileUpload),
-    url(r'^html/$', views.testHtml),
+    url(r'^register/$', views.register),
     url(r'^book_json/$', views.book),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

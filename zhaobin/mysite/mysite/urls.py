@@ -15,18 +15,14 @@ Including another URLconf
 """
 from django.conf.urls.static import  static
 from django.conf import settings
-from filebrowser.sites import site
 from django.conf.urls import url, include
-from django.contrib import admin
+from django.contrib import admin,auth
 
 urlpatterns = [
     url(r'^avatar/', include('avatar.urls')),
     url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^site_media/(?P<path>.*)', 'django.views.static.serve', {'document_root':settings.MEDIA_ROOT}),
-    url(r'^admin/filebrowser/', include(site.urls)),
-    url(r'^grappelli/', include('grappelli.urls')),
-    url(r'^accounts/', include('users.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
