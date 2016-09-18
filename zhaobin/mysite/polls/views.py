@@ -117,7 +117,6 @@ def fileUpload(request):
     filesUpload.save()
 
     return HttpResponse('success')
-#
 #注册
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名：',max_length=100)
