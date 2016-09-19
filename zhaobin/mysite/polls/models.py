@@ -1,7 +1,11 @@
 # -*- coding:UTF-8 -*- ＃必须在第一行或者第二行
 # -*- coding:gb2312 -*- ＃必须在第一行或者第二行
 # -*- coding:GBK -*- ＃必须在第一行或者第二行
+from __future__ import unicode_literals
 import sys
+from django.contrib.auth.models import User
+from django.db import models
+from django.contrib import admin
 reload(sys)
 sys.setdefaultencoding("utf-8")
 from django.db import models
@@ -67,11 +71,24 @@ class booklist(models.Model):
 class NormalUser(models.Model):
   username = models.CharField(max_length=30)
   headImg = models.FileField(upload_to='./upload')
-
   def __unicode__(self):
     return self.username
-
   class Meta:
     ordering = ['username']
-
-
+  def admin_sample(self):
+        return '<img src="/templates/%s" height="50" width="50" />' %(self.level)
+  admin_sample.short_description = '缩略图'
+  admin_sample.allow_tags = True
+class MyUser(models.Model):
+    user = models.OneToOneField(User)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    avatar = models.ImageField(upload_to='photo', null=True, blank=True)
+class BlogsPost(models.Model):
+    title = models.CharField(max_length = 150)
+    body = models.TextField()
+    timestamp = models.DateTimeField()
+    class Meta:
+     ordering = ('-timestamp',)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title','timestamp')
+admin.site.register(BlogsPost,BlogPostAdmin)

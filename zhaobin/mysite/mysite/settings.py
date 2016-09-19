@@ -35,10 +35,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django_admin_bootstrapped',
     'suit',
+    'appTest',
     'polls',
-    'avatar',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -51,15 +50,16 @@ INSTALLED_APPS = [
 
 
 ######
-
+AUTH_PROFILE_MODULE = 'polls.MyUser'
 # 设置管理标题
 SUIT_CONFIG = {
     # header
-    'ADMIN_NAME': u'网站名',
+    'ADMIN_NAME': u'博客频道',
     'MENU': (
         'sites',
         {'app': 'polls', 'label': u'列表'},
-        # {'app': 'photologue', 'label': u'相册'},
+        {'app': 'apptest', 'label': u'用户'},
+        {'app': 'auth', 'label': u'认证管理'},
     ),
 
 }

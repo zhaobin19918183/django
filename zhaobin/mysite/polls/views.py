@@ -3,9 +3,7 @@
 # -*- coding:GBK -*- ＃必须在第一行或者第二行
 # Create your views here.
 #-*- encoding:gb2312 -*-
-from django.shortcuts import  render
-from django.http import HttpResponse
-from .models import addForm,booklist,NormalUser,ExamInfo
+from .models import addForm,booklist,NormalUser,ExamInfo,BlogsPost
 import simplejson
 from django.core import serializers
 from .forms import ExamInfoForm,BookList
@@ -14,7 +12,11 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from serializers import UserSerializer,GroupSerializer,booklistSerializer
 from django import forms
-from django.contrib import auth
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import loader,Context
+from django.http import HttpResponse
 
 class JsonTest(simplejson.JSONEncoder ):
     """
@@ -91,11 +93,11 @@ def registerNormalUser(request):
     if uf.is_valid():
       # get the info of the form  cleaned_data :处理或得到的数据,让 username 和 uf 获得数据类型一致
       username = uf.cleaned_data['username']
-      headImg = uf.cleaned_data['headImg']
+      headImg  = uf.cleaned_data['headImg']
       # write in database
       normalUser = NormalUser()
       normalUser.username = username
-      normalUser.headImg = headImg
+      normalUser.headImg  = headImg
       normalUser.save()
       return HttpResponse('Upload Succeed!')
   else:
@@ -103,11 +105,8 @@ def registerNormalUser(request):
   return render(request,'polls/register.html',{'uf':uf})
 #文件存储 ios
 @csrf_exempt
-#逻辑判断
 def fileUpload(request):
-
   if request.method   == 'POST':
-
     name              = request.POST.get('name')
     #files 是上传的文件流通过对应的参数名获取
     image             = request.FILES.get('image')
@@ -115,14 +114,12 @@ def fileUpload(request):
     filesUpload.level = image
     filesUpload.name  = name
     filesUpload.save()
-
     return HttpResponse('success')
 #注册
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名：',max_length=100)
     passworld = forms.CharField(label='密码：',max_length=52)
     email = forms.EmailField(label='电子邮件：')
-
 # Create your views here.
 def register(request):
     if request.method == "POST":
@@ -133,12 +130,25 @@ def register(request):
             passworld = uf.cleaned_data['passworld']
             email = uf.cleaned_data['email']
             #将表单写入数据库
-            user = User()
-            user.username = username
-            user.set_password(raw_password=passworld)
-            user.email = email
-            user.save()
+            user = User.objects.create_superuser(username,email,passworld)
+            if user.is_staff:
+             print ("注册失败")
+            else:
+             user.save()
+            # user = User()
+            # user.username = username
+            # user.set_password(raw_password=passworld)
+            # user.email = email
+            # print user.is_staff #True
+            # user.save()
             return HttpResponse('success')
     else:
         uf = UserForm()
     return render(request,'polls/register.html',{'uf':uf})
+# Create your views here.
+
+def archive(request):
+    posts = BlogsPost.objects.all()
+    t = loader.get_template("polls/archive.html")
+    c = Context({'posts':posts})
+    return HttpResponse(t.render(c))
