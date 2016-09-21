@@ -1,18 +1,68 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+  <!--<meta charset="UTF-8">-->
+  <!--<title>Register</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2 align="center">Register</h2>-->
+
+<!--<form method="POST" enctype="multipart/form-data">-->
+  <!--{% csrf_token %}-->
+  <!--{{ uf.as_p }}-->
+  <!--<input type="submit" value="Submit">-->
+<!--</form>-->
+
+
+<!--</body>-->
+<!--</html>-->
+
+<!--登陆-->
 <!DOCTYPE html>
+{% load bootstrap_toolkit %}
+
 <html lang="en">
+<title> Django 博客</title>
+{% bootstrap_stylesheet_tag %}
+{% bootstrap_stylesheet_tag "responsive" %}
 <head>
-  <meta charset="UTF-8">
-  <title>Register</title>
-</head>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script></head>
+
 <body>
-<h2 align="center">Register</h2>
 
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ uf.as_p }}
-  <input type="submit" value="Submit">
-</form>
+<nav class="navbar navbar-inverse " role="navigation">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">首页</a>
+    </div>
+    <div>
+        <ul class="nav navbar-nav pull-right">
+            <li class="navbar-brand "><a href="#">{{username}}</a></li>
+            <li><a href="/polls/login/"><input  type="button" value="登出" class="btn btn-success"></a></li>
 
+        </ul>
+    </div>
+    </div>
+</nav></body>
+<h1>Django 博客 </h1>
+  <style type="text/css">
+    body{color:#efd;background:#453;padding:0 5em;margin:0}
+    h1{padding:2em 1em;background:#675}
+    h2{color:#bf8;border-top:1px dotted #fff;margin-top:2em}
+    p{margin:1em 0}
+  </style>
+ <body>
 
-</body>
+  {% block content %}
+  {% for content in content %}
+  <h2>{{ content.title }}</h2>
+  <p>{{ content.timestamp | date:"F jS"}}</p>
+  <p>{{ content.body }}</p>
+  {% endfor %}
+  {% endblock %}
+
+ </body>
+
 </html>

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'suit',
     'appTest',
     'polls',
+    'avatar',
+    'bootstrap_toolkit',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -47,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.auth',
 
 ]
-
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 5184000
 
 ######
 AUTH_PROFILE_MODULE = 'polls.MyUser'
@@ -60,6 +63,7 @@ SUIT_CONFIG = {
         {'app': 'polls', 'label': u'列表'},
         {'app': 'apptest', 'label': u'用户'},
         {'app': 'auth', 'label': u'认证管理'},
+        {'app': 'avatar', 'label': u'头像'},
     ),
 
 }

@@ -12,11 +12,13 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from serializers import UserSerializer,GroupSerializer,booklistSerializer
 from django import forms
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.shortcuts import render
 from django.template import loader,Context
-from django.http import HttpResponse
+from django.shortcuts import render_to_response,render
+from django.http import HttpResponse ,HttpResponseRedirect
+from django.contrib import auth
+from django.template.context import RequestContext
+from forms import LoginForm
+from django.conf import  settings
 
 class JsonTest(simplejson.JSONEncoder ):
     """
@@ -135,20 +137,51 @@ def register(request):
              print ("注册失败")
             else:
              user.save()
-            # user = User()
-            # user.username = username
-            # user.set_password(raw_password=passworld)
-            # user.email = email
-            # print user.is_staff #True
-            # user.save()
             return HttpResponse('success')
     else:
         uf = UserForm()
     return render(request,'polls/register.html',{'uf':uf})
 # Create your views here.
-
 def archive(request):
     posts = BlogsPost.objects.all()
     t = loader.get_template("polls/archive.html")
     c = Context({'posts':posts})
     return HttpResponse(t.render(c))
+#login
+def login(request):
+
+    if request.method == 'GET':
+       form = LoginForm()
+
+       if request.user.is_authenticated():
+        content = BlogsPost.objects.all()
+        username =request.session['username']
+        print("用户已登陆")
+        return render_to_response('polls/index.html',{'username':username,'content':content},RequestContext(request))
+
+       else:
+           print("用户未登陆")
+       return render_to_response('polls/login.html',RequestContext(request,{'form':form,}))
+    else:
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST.get('username','')
+            password = request.POST.get('password','')
+            user = auth.authenticate(username=username,password=password)
+            if user is not None and user.is_active:
+                auth.login(request,user)
+                #将用户名传递给前台页面显示
+                request.session['username'] =username
+                #将所需要的数据传递出去
+                content = BlogsPost.objects.all()
+
+                return render_to_response('polls/index.html',{'username':username,'content':content},RequestContext(request))
+            else:
+                return render_to_response('polls/login.html',RequestContext(request,{'form':form,'password_is_wrong':True}))
+        else:
+            return render_to_response('polls/login.html',RequestContext(request,{'form':form,}))
+#loginOut
+@csrf_exempt
+def logout(request):
+    auth.logout(request)
+    return render_to_response('polls/login.html')
