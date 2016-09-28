@@ -24,7 +24,8 @@ urlpatterns = [
     url(r'^registerNormalUser/$',registerNormalUser),
     url(r'^archive/$',archive),
     url(r'^login/$',login),
-    url(r'^logout/$',logout)
+    url(r'^logout/$',logout),
+    url(r'^blog/', views.IndexView.as_view()),
 
 
 ]

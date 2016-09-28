@@ -18,7 +18,15 @@ from django.http import HttpResponse ,HttpResponseRedirect
 from django.contrib import auth
 from django.template.context import RequestContext
 from forms import LoginForm
-from django.conf import  settings
+from django.views.generic.list import ListView
+from .models import Article, Category
+from markdown import markdown
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, FormView
+from django.views.generic.dates import YearArchiveView, MonthArchiveView
+from django.views.generic import TemplateView
+from django.utils.safestring import mark_safe
 
 class JsonTest(simplejson.JSONEncoder ):
     """
@@ -183,5 +191,92 @@ def login(request):
 #loginOut
 @csrf_exempt
 def logout(request):
-    auth.logout(request)
-    return render_to_response('polls/login.html')
+    print(request)
+    if request.method == 'GET':
+      auth.logout(request)
+      form = LoginForm()
+      return render_to_response('polls/login.html',RequestContext(request,{'form':form,}))
+    else:
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST.get('username','')
+            password = request.POST.get('password','')
+            user = auth.authenticate(username=username,password=password)
+            if user is not None and user.is_active:
+                auth.login(request,user)
+                #将用户名传递给前台页面显示
+                request.session['username'] =username
+                #将所需要的数据传递出去
+                content = BlogsPost.objects.all()
+                return render_to_response('polls/index.html',{'username':username,'content':content},RequestContext(request))
+            else:
+                return render_to_response('polls/login.html',RequestContext(request,{'form':form,'password_is_wrong':True}))
+        else:
+            return render_to_response('polls/login.html',RequestContext(request,{'form':form,}))
+#博客demo
+
+class IndexView(ListView):
+    template_name = "blog/index.html"
+
+    def get_queryset(self):
+        return Article.objects.filter(status='p')
+
+
+class BlogView(ListView):
+    template_name = "blog/blog.html"
+
+    def get_queryset(self):
+        return Article.objects.filter(status='p')
+
+
+class AboutView(TemplateView):
+    template_name = 'blog/about.html'
+
+
+class ContactView(TemplateView):
+    template_name = 'blog/contact.html'
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = "blog/detail.html"
+    pk_url_kwarg = 'article_id'
+
+    def get_object(self, queryset=None):
+        obj = super(ArticleDetailView, self).get_object(queryset=None)
+        obj.body = mark_safe(markdown.markdown(obj.body, extras=['fenced-code-blocks', 'code-friendly', 'codehilite']))
+        # BUG:必须在这里渲染，如果在模板中通过模板标签渲染则格式会乱掉
+        obj.viewed()
+        return obj
+
+
+class CategoryView(ListView):
+    template_name = "blog/index.html"
+
+    def get_queryset(self):
+        return Article.objects.filter(category=self.kwargs['category_id'], status='p')
+
+
+class TagView(ListView):
+    template_name = "blog/index.html"
+
+    def get_queryset(self):
+        return Article.objects.filter(tags=self.kwargs['tag_id'], status='p')
+
+
+class ArticleYearArchiveView(YearArchiveView):
+    queryset = Article.objects.all()
+    date_field = "created_time"
+    make_object_list = True
+    context_object_name = 'article_list'
+    template_name = 'blog/index.html'
+
+
+class ArticleMonthArchiveView(MonthArchiveView):
+    queryset = Article.objects.all()
+    date_field = "created_time"
+    context_object_name = 'article_list'
+    template_name = 'blog/index.html'
+    month_format = '%m'
+
+

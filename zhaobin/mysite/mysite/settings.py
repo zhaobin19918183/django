@@ -47,8 +47,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django.contrib.auth',
+    'django.contrib.sites',
+    'django_comments',
+    'markdown_deux'
+
 
 ]
+SITE_ID = 1
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 5184000
 
